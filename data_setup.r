@@ -10,8 +10,8 @@ poverty_orig[,nHH:=relPov1+relPov0]
 poverty_orig[nHH<50,c("relPov","absPov","pov_rel_municip"):=NA,with=FALSE]
 
 
-write.table(poverty_orig,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty.tsv",sep="\t",row.names = FALSE)
-write.table(poverty_orig,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty.csv",sep=",",row.names = FALSE)
+write.table(poverty_orig,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty.tsv",sep="\t",row.names = FALSE,na="")
+write.table(poverty_orig,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty.csv",sep=",",row.names = FALSE,na="")
 
 
 poverty <- read.table("C:/Users/Hackstutz/Dropbox/Git/bern_poverty/poverty.tsv",header=TRUE)
