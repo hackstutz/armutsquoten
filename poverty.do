@@ -7,7 +7,7 @@
 
 
 ** Working directory
-cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Schlussbericht\Daten\Bern\"
+cd "C:\Users\hlo1\Daten"
 
 
 ///// Data Prepartion
@@ -31,7 +31,7 @@ gen anz_kinder = ANZAHL_KINDER + ANZAHL_UNTERSTUETZTE_PERS
 drop if hh_id==. 
 
 ** Collpase tax unit over households
-collapse (max) BFS=BFS (sum) sumpaare=paare sumkind=anz_kinder sumtoteink=TOTEINK sumverfeink=verfeink sumverfeinka=verfeinka sumtotverm=TOTVERM sumschulden=SCHULDEN sumverm_bew=VERM_bew (count) counthh=pid, by(hh_id)
+collapse (max) BFS=BFS (sum) sumpaare=paare sumkind=anz_kinder sumtoteink=TOTEINK+erm sumverfeink=verfeink sumverfeinka=verfeinka sumtotverm=TOTVERM sumschulden=SCHULDEN sumverm_bew=VERM_bew (count) counthh=pid, by(hh_id)
 
 gen hhmitglieder=sumpaare+sumkind
 replace hhmitglieder=round(hhmitglieder) 
@@ -66,7 +66,7 @@ putexcel A1=("Gemeinde") B1=("absPov0") C1=("absPov1")using "poverty.xlsx", repl
 putexcel A2=matrix(rows) B2=matrix(cell) using "poverty.xlsx", modify
 
 // Relativer Ansatz - Medianes Einkommen Kanton 
-drop verfeinka
+
 gen verfeinka=sumverfeink + 0.05*(sumtotverm-sumschulden) 	/* inklusive 5% des Reinvermögens */
 replace verfeinka=verfeinka/1 		if hhmitglieder==1 		/* Äquivalenzeinkommen berechnen Quadrat-Wurzel-Skala OECD */
 replace verfeinka=verfeinka/1.41 	if hhmitglieder==2
@@ -89,7 +89,7 @@ putexcel D2=matrix(cell) using "poverty.xlsx", modify
 
 // Relativer Ansatz - Medianes Einkommen Kanton inklusive 5% des Reinvermögens - Kommunale Median Einkommen
 
-egen medianincome=median(verfeinka),by(bfs)
+egen medianincome=median(verfeinka),by(BFS)
 gen pov_rel_municip=cond(verfeinka<0.5*medianincome,1,0) 
 
 // Output to Excel
