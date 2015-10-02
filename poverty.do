@@ -31,11 +31,19 @@ gen age=2012-GEBURTSJAHR_P1
 * Drop missing household ID
 drop if hh_id==. 
 
-** Consider Ermtaxed income as real income
-*collapse (max) BFS=BFS (sum) sumpaare=paare sumkind=anz_kinder sumtoteink=TOTEINK erm=erm sumverfeink=verfeink sumverfeinka=verfeinka sumtotverm=TOTVERM sumschulden=SCHULDEN sumverm_bew=VERM_bew (count) counthh=pid (max) oldestmember=age, by(hh_id)
+** Collpase tax unit over households 
 
-** Collpase tax unit over households (inlcuding Ermtax, but still counting them)
-collapse (max) BFS=BFS (sum) sumpaare=paare sumkind=anz_kinder sumtoteink=TOTEINK sumverfeink=verfeink sumverfeinka=verfeinka sumtotverm=TOTVERM sumschulden=SCHULDEN sumverm_bew=VERM_bew (count) counthh=pid (max) oldestmember=age, by(hh_id)
+* Consider Ermtaxed 
+collapse (max) BFS=BFS (sum) sumpaare=paare sumkind=anz_kinder sumtoteink=TOTEINK erm=erm sumverfeink=verfeink sumverfeinka=verfeinka sumtotverm=TOTVERM sumschulden=SCHULDEN sumverm_bew=VERM_bew (count) counthh=pid (max) oldestmember=age, by(hh_id)
+
+* drop ermtaxed with only ermincome
+drop if erm!=0 & sumverfeinka==0
+
+* consider erm income as real income
+*replace sumverfeink=sumverfeink+erm
+
+** (inlcuding Ermtax, not considering their income but still counting them)
+*collapse (max) BFS=BFS (sum) sumpaare=paare sumkind=anz_kinder sumtoteink=TOTEINK sumverfeink=verfeink sumverfeinka=verfeinka sumtotverm=TOTVERM sumschulden=SCHULDEN sumverm_bew=VERM_bew (count) counthh=pid (max) oldestmember=age, by(hh_id)
 
 gen hhmitglieder=sumpaare+sumkind
 replace hhmitglieder=round(hhmitglieder) 
@@ -43,17 +51,13 @@ replace hhmitglieder=round(hhmitglieder)
 * Drop poor youngster (who live from partents)
 drop if oldestmember<26 
 
-
-
-
-** Weil die Steuerdaten ebenfalls Kollektivhaushalte umfassen (Wohnheime, Altersheime etc.), die häufig für Verteilungsanalysen ausgeschlossen werden, werden Haushalte mit hoher Anzahl Haushaltsmitglieder ausgeschlossen
-
+* Weil die Steuerdaten ebenfalls Kollektivhaushalte umfassen (Wohnheime, Altersheime etc.), die häufig für Verteilungsanalysen ausgeschlossen werden, werden Haushalte mit hoher Anzahl Haushaltsmitglieder ausgeschlossen
 drop if hhmitglieder>8 /* betrifft 0.46 Prozent aller Haushalte */
+
 
 ///// Calculate Poverty measures 
 
-// Income for Ermtaxed
-*replace sumverfeink=sumverfeink+erm
+
 
 // absoluter Ansatz
 // gemäss SKOS-Richtlinien Materielle grunsicherung (Pauschale+Wohnkosten(gemittelt für Hoch und Tiefpreisgemeinden)+medizinische Grundversorgung)
@@ -130,7 +134,7 @@ gen relativeregionalpoverty=pov_rel_municip*100/Bevölkerung
 
 
 
-//Prio 2
+//Labels
 
 label define BFSlab ///
 301	"	Aarberg	"	///
