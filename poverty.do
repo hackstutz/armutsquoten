@@ -77,10 +77,10 @@ recode pov_abs (1=0) if sumverm_bew>10000 /* Personen mit mindestens 10'000 CHF 
 tab pov_abs
 
 // Output to Excel
-tab BFS pov_abs, row matcell(cell) matrow(rows) matcol(col) /* cell= absolute Häufigketen, rows=Value label BFS, col= Value label pov_abs */
-cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Choropleth\armutsquoten\Poverty Tables"
-putexcel A1=("Gemeinde") B1=("absPov0") C1=("absPov1")using "poverty.xlsx", replace
-putexcel A2=matrix(rows) B2=matrix(cell) using "poverty.xlsx", modify
+*tab BFS pov_abs, row matcell(cell) matrow(rows) matcol(col) /* cell= absolute Häufigketen, rows=Value label BFS, col= Value label pov_abs */
+*cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Choropleth\armutsquoten\Poverty Tables"
+*putexcel A1=("Gemeinde") B1=("absPov0") C1=("absPov1")using "poverty.xlsx", replace
+*putexcel A2=matrix(rows) B2=matrix(cell) using "poverty.xlsx", modify
 
 // Relativer Ansatz - Medianes Einkommen Kanton 
 
@@ -99,10 +99,10 @@ gen pov_rel=cond(verfeinka<0.5*r(p50),1,0)
 tab pov_rel
 
 // Output to Excel
-tab BFS pov_rel, row matcell(cell) matrow(rows) matcol(col) /* cell= absolute Häufigketen, rows=Value label BFS, col= Value label pov_abs */
-cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Choropleth\armutsquoten\Poverty Tables"
-putexcel D1=("relPov0") E1=("relPov1")using "poverty.xlsx", modify
-putexcel D2=matrix(cell) using "poverty.xlsx", modify
+*tab BFS pov_rel, row matcell(cell) matrow(rows) matcol(col) /* cell= absolute Häufigketen, rows=Value label BFS, col= Value label pov_abs */
+*cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Choropleth\armutsquoten\Poverty Tables"
+*putexcel D1=("relPov0") E1=("relPov1")using "poverty.xlsx", modify
+*putexcel D2=matrix(cell) using "poverty.xlsx", modify
 
 // Relativer Ansatz - Medianes Einkommen Kanton inklusive 5% des Reinvermögens - Kommunale Median Einkommen
 
@@ -111,10 +111,10 @@ gen pov_rel_municip=cond(verfeinka<0.5*medianincome,1,0)
 tab pov_rel_municip
 
 // Output to Excel
-tab BFS pov_rel_municip, row matcell(cell) matrow(rows) matcol(col) /* cell= absolute Häufigketen, rows=Value label BFS, col= Value label pov_abs */
-cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Choropleth\armutsquoten\Poverty Tables"
-putexcel F1=("pov_rel_municip0") G1=("pov_rel_municip1")using "poverty.xlsx", modify
-putexcel F2=matrix(cell) using "poverty.xlsx", modify
+*tab BFS pov_rel_municip, row matcell(cell) matrow(rows) matcol(col) /* cell= absolute Häufigketen, rows=Value label BFS, col= Value label pov_abs */
+*cd "P:\WGS\FBS\ISS\Projekte laufend\SNF Ungleichheit\Valorisierung\Choropleth\armutsquoten\Poverty Tables"
+*putexcel F1=("pov_rel_municip0") G1=("pov_rel_municip1")using "poverty.xlsx", modify
+*putexcel F2=matrix(cell) using "poverty.xlsx", modify
 
 // Transform housholdcounts to persons
 replace pov_abs=pov_abs*hhmitglieder
@@ -123,7 +123,7 @@ replace pov_rel_municip=pov_rel_municip*hhmitglieder
 
 
 // Collapse over municipalities 
-collapse (sum) pov_abs=pov_abs pov_rel=pov_rel pov_rel_municip=pov_rel_municip Bevölkerung=hhmitglieder, by(BFS)
+collapse (sum) pov_abs=pov_abs pov_rel=pov_rel pov_rel_municip=pov_rel_municip Bevölkerung=hhmitglieder (max) medianincome=medianincome, by(BFS)
 
 
 // Calculate Poverty Quotas
@@ -551,7 +551,7 @@ label values BFS BFSlab
 gen id=BFS
 
 // Generate variable that catches change from absolute to relative perspective
-gen diff= absolutpoverty - relativeregionalpoverty
+gen diff= relativeregionalpoverty-absolutpoverty  
 
 
 // Drop Monible (many cases missing)
