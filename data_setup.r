@@ -16,5 +16,13 @@ poverty[Bevölkerung<100,c("absolutpoverty","relativeregionalpoverty","diff","ab
 
 write.table(poverty,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty_persons_kat.csv",sep=",",row.names = FALSE,na="")
 
+# check legend min/max
+poverty%>%filter(Bevölkerung>100) %>% summarise(min(absolutpoverty),min(relativeregionalpoverty),min(diff),max(absolutpoverty),max(relativeregionalpoverty),max(diff))
+
+#min(absolutpoverty) min(relativeregionalpoverty) min(diff) max(absolutpoverty) max(relativeregionalpoverty)
+#1:           0.3584229                     2.850356 -7.547169            16.66224                     20.52239
+#max(diff)
+#1:  18.28358
+
 
 #poverty <- read.table("C:/Users/Hackstutz/Dropbox/Git/bern_poverty/poverty.tsv",header=TRUE)
