@@ -14,7 +14,7 @@ poverty[,abskat:=as.numeric(cut(poverty$absolutpoverty,breaks = c(-Inf,quantile(
 poverty[,relkat:=as.numeric(cut(poverty$relativeregionalpoverty,breaks = c(-Inf,quantile(poverty$relativeregionalpoverty,c(0.05,0.25,0.49,0.51,0.75,0.95)),Inf)))]
 poverty[,diffkat:=as.numeric(cut(poverty$diff,breaks = c(-Inf,quantile(poverty$diff,c(0.02,0.04,0.06,0.08,0.4,0.7)),Inf)))]
 
-write.table(poverty,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty_persons.csv",sep=",",row.names = FALSE,na="")
+write.table(poverty,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty_persons_kat.csv",sep=",",row.names = FALSE,na="")
 
 
 #poverty <- read.table("C:/Users/Hackstutz/Dropbox/Git/bern_poverty/poverty.tsv",header=TRUE)
