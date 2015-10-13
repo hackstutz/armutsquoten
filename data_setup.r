@@ -8,11 +8,11 @@ poverty <- as.data.table(read.table("C:/Users/Hackstutz/Dropbox/Git/armutsquoten
 #poverty[,relPov:=relPov1/(relPov1+relPov0)]
 #poverty[,pov_rel_municip:=pov_rel_municip1/(pov_rel_municip1+pov_rel_municip0)]
 #poverty[,absPov:=absPov1/(absPov1+absPov0)]
-#poverty[,nHH:=relPov1+relPov0]
-#poverty[nHH<50,c("relPov","absPov","pov_rel_municip"):=NA,with=FALSE]
+
 poverty[,abskat:=as.numeric(cut(poverty$absolutpoverty,breaks = c(-Inf,quantile(poverty$absolutpoverty,c(0.05,0.25,0.49,0.51,0.75,0.95)),Inf)))]
 poverty[,relkat:=as.numeric(cut(poverty$relativeregionalpoverty,breaks = c(-Inf,quantile(poverty$relativeregionalpoverty,c(0.05,0.25,0.49,0.51,0.75,0.95)),Inf)))]
 poverty[,diffkat:=as.numeric(cut(poverty$diff,breaks = c(-Inf,quantile(poverty$diff,c(0.02,0.04,0.06,0.08,0.4,0.7)),Inf)))]
+poverty[Bevölkerung<100,c("absolutpoverty","relativeregionalpoverty","diff","abskat","relkat","diffkat"):=NA,with=FALSE]
 
 write.table(poverty,file="C:/Users/Hackstutz/Dropbox/Git/armutsquoten/poverty_persons_kat.csv",sep=",",row.names = FALSE,na="")
 
